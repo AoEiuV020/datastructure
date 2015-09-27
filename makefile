@@ -40,7 +40,7 @@ CFLAGS=-Wall -std=c99 -O2 -g $(INCLUDES)
 CXXFLAGS=-Wall -std=c++11 -O2 -g $(INCLUDES)
 LDFLAGS=-L.
 #TARGET=$(notdir $(CURDIR)).$(TAREXT)
-TARGET=$(suffix $(n)).$(TAREXT)
+TARGET=$(basename $(n)).$(TAREXT)
 OBJS=$(patsubst %$(SRCEXT),%.o,$(n))
 LIBS=
 
