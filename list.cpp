@@ -150,6 +150,10 @@ bool List<T>::pop_back()
 template <typename T>
 bool List<T>::insert(const int index,const T &obj)
 {
+	if(index<0||index>n)
+	{
+		return false;
+	}
     Node *p,*n;//prev,next,
     p=head;
     n=p->next;
