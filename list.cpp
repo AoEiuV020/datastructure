@@ -1,13 +1,18 @@
 #include <iostream>
+using namespace std;
 template < typename T > class List
 {
   private:
-	struct Node;
+	class Node;
 	Node *head, *tail;
 	int theSize;
 	void init();
+	void copy(const List<T>&);
   public:
 	List();
+	List(const List<T> &);
+	List<T> &operator=(const List<T> &);
+	~List();
 	int size() const;
 	bool empty() const;
 	T & front();
@@ -23,11 +28,12 @@ template < typename T > class List
 	bool erase(const int&,const int&);
 	void clear();
 	void reverse();
-	~List();
+	int remove(const T &);
 };
 
-template < typename T > struct List <T >::Node
+template < typename T > class List <T >::Node
 {
+	public:
 	T data;
 	Node *prev;
 	Node *next;
@@ -42,10 +48,30 @@ template < typename T > void List < T >::init()
 	tail->next = nullptr;
 	theSize = 0;
 }
+template < typename T > void List < T >::copy(const List<T> &list)
+{
+	Node *node;
+	node=list.head->next;
+	while(node!=list.tail)
+	{
+		push_back(node->data);
+		node=node->next;
+	}
+}
 
 template < typename T > List < T >::List()
 {
 	init();
+}
+template < typename T > List < T >::List(const List<T> &list)
+{
+	init();
+	copy(list);
+}
+template < typename T > List<T> & List < T >::operator=(const List &list)
+{
+	clear();
+	copy(list);
 }
 
 template < typename T > List < T >::~List()
@@ -225,23 +251,63 @@ template < typename T > void List < T >::clear()
 }
 template < typename T > void List < T >::reverse()
 {
-	Node *p;
-	p=head;
-	while(p!=tail)
+	Node *node;
+	node=head;
+	while(node!=tail)
 	{
-		p=p->next;
-		p->prev->next=p->prev->prev;
-		p->prev->prev=p;
+		node=node->next;
+		node->prev->next=node->prev->prev;
+		node->prev->prev=node;
 	}
 	tail->next=tail->prev;
 	tail->prev=nullptr;
 	tail=head;
-	head=p;
+	head=node;
+}
+template < typename T > int List < T >::remove(const T &key)
+{
+	int count=0;
+	Node *node;
+	node=head->next;
+	while(node!=tail)
+	{
+		if(key==node->data)
+		{
+			node->prev->next=node->next;
+			node->next->prev->next=node->next;
+			node=node->next;
+			delete node->prev;
+			++count;
+		}
+		else
+		{
+			node=node->next;
+		}
+	}
+	return count;
+}
+template < typename T >
+class Polynomial:public List<int>
+{
+	private:
+		class Term;
+	public:
+};
+template < typename T >
+class Polynomial<T>::Term:public Node
+{
+	public:
+		T coef;			//coefficient...
+};
+template < typename T >
+ostream &operator<<(ostream &out,const Polynomial<T> &p)
+{
+	out<<p.size();
+	return out;
 }
 
-using namespace std;
 int main()
-{
+{	
 	List < int >li;
 	int n = 20;
 	for (int i = 0; i < n; ++i)
@@ -251,15 +317,12 @@ int main()
 	li.erase(4,8);
 	li.erase(10);
 	n=li.size();
-	for (int i = 0; i < n; ++i)
-	{
-		cout <<i<<":"<< li.front() << endl;
-		li.pop_front();
-	}
+	List <int> t(li);
 	li.reverse();
 	for (int i = 0; i < n; ++i)
 	{
-		cout <<i<<":"<< li.front() << endl;
+		cout <<i<<":"<< t.front() << "," << li.front() << endl;
+		t.pop_front();
 		li.pop_front();
 	}
 	li.clear();
