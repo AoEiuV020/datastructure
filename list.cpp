@@ -22,6 +22,7 @@ template < typename T > class List
 	bool erase(const int&);
 	bool erase(const int&,const int&);
 	void clear();
+	void reverse();
 	~List();
 };
 
@@ -212,6 +213,31 @@ template < typename T > bool List < T >::erase(const int &index,const int &num)
 	theSize-=num;
 	return true;
 }
+template < typename T > void List < T >::clear()
+{
+	while(head->next!=tail)
+	{
+		head->next=head->next->next;
+		delete head->next->prev;
+	}
+	tail->prev=head;
+	theSize=0;
+}
+template < typename T > void List < T >::reverse()
+{
+	Node *p;
+	p=head;
+	while(p!=tail)
+	{
+		p=p->next;
+		p->prev->next=p->prev->prev;
+		p->prev->prev=p;
+	}
+	tail->next=tail->prev;
+	tail->prev=nullptr;
+	tail=head;
+	head=p;
+}
 
 using namespace std;
 int main()
@@ -230,5 +256,13 @@ int main()
 		cout <<i<<":"<< li.front() << endl;
 		li.pop_front();
 	}
+	li.reverse();
+	for (int i = 0; i < n; ++i)
+	{
+		cout <<i<<":"<< li.front() << endl;
+		li.pop_front();
+	}
+	li.clear();
+	cout<<li.size()<<li.empty()<<endl;
 	return 0;
 }
