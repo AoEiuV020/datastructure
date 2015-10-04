@@ -1,5 +1,4 @@
 #include <iostream>
-using namespace std;
 template < typename T > class List
 {
   private:
@@ -292,6 +291,8 @@ class Polynomial:public List<int>
 	private:
 		class Term;
 	public:
+		void output(std::ostream &)const;
+		void input(std::istream &);
 };
 template < typename T >
 class Polynomial<T>::Term:public Node
@@ -300,32 +301,43 @@ class Polynomial<T>::Term:public Node
 		T coef;			//coefficient...
 };
 template < typename T >
-ostream &operator<<(ostream &out,const Polynomial<T> &p)
+void Polynomial<T>::input(std::istream &in)
 {
-	out<<p.size();
+	int data;
+	T coef;
+	in>>data>>coef;
+}
+template < typename T >
+void Polynomial<T>::output(std::ostream &out)const
+{
+	if(empty())
+	{
+		out<<0;
+	}
+	else
+	{
+		out<<1;
+	}
+}
+
+template < typename T >
+std::istream &operator>>(std::istream &in,Polynomial<T> &poly)
+{
+	poly.input(in);
+	return in;
+}
+template < typename T >
+std::ostream &operator<<(std::ostream &out,const Polynomial<T> &poly)
+{
+	poly.output(out);
 	return out;
 }
 
+using namespace std;
 int main()
 {	
-	List < int >li;
-	int n = 20;
-	for (int i = 0; i < n; ++i)
-	{
-		li.push_back(i);
-	}
-	li.erase(4,8);
-	li.erase(10);
-	n=li.size();
-	List <int> t(li);
-	li.reverse();
-	for (int i = 0; i < n; ++i)
-	{
-		cout <<i<<":"<< t.front() << "," << li.front() << endl;
-		t.pop_front();
-		li.pop_front();
-	}
-	li.clear();
-	cout<<li.size()<<li.empty()<<endl;
+	Polynomial<double> a,b;
+	cin>>a;
+	cout<<a;
 	return 0;
 }
