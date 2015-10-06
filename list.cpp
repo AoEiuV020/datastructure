@@ -336,7 +336,7 @@ template < typename T >
 Polynomial<T> &Polynomial<T>::operator+=(const Term &term)
 {
 	Node *node;
-	for(node=head->next;(node!=tail)||(node->data>term.data);node=node->next){/*nothing...*/}
+	for(node=head->next;(node!=tail)&&(node->data>term.data);node=node->next){/*nothing...*/}
 	if((node==tail)||(node->data<term.data))
 	{
 		insert(static_cast<Node*>(new Term(term)),(node->prev));
@@ -379,9 +379,15 @@ Polynomial<T> Polynomial<T>::operator+(const Polynomial &poly)
 template < typename T >
 void Polynomial<T>::input(std::istream &in)
 {
-	int data;
 	T coef;
-	in>>data>>coef;
+	int data;
+	in>>coef>>data;
+	while(in.good())
+	{
+		operator+=(Polynomial(coef,data));
+		in>>coef>>data;
+	}
+	in.clear();
 }
 template < typename T >
 void Polynomial<T>::output(std::ostream &out)const
@@ -416,12 +422,14 @@ std::ostream &operator<<(std::ostream &out,const Polynomial<T> &poly)
 using namespace std;
 int main()
 {	
-	Polynomial<double> a(1.9,2),b(3.8,6),c;
-
+	Polynomial<double> a(1.9,2),b(3.8,6),c,d;
+	cin>>c>>d;
 	cout<<a<<endl;
 	cout<<b<<endl;
 	cout<<c<<endl;
+	cout<<d<<endl;
 	cout<<a+b<<endl;
 	cout<<a+b+c<<endl;
+	cout<<a+b+c+d<<endl;
 	return 0;
 }
