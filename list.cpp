@@ -79,13 +79,11 @@ template < typename T > List < T >::~List()
 {
 	Node *node;
 	node = head;
-	while (head->next != tail)
+	for(node=head->next;node!=tail;node=node->next)
 	{
-		head = head->next;
-		delete node;
+		delete node->prev;
 	}
-	delete head;
-	delete tail;
+	delete node;
 }
 
 template < typename T > int List < T >::size() const
@@ -302,11 +300,14 @@ class Polynomial:public List<int>
 	private:
 		class Term;
 		Polynomial &operator+=(const Term &);
+		Polynomial operator*(const Term &);
 	public:
 		Polynomial();
 		Polynomial(const T &,const int&);
 		Polynomial &operator+=(const Polynomial &);
+		Polynomial &operator*=(const Polynomial &);
 		Polynomial operator+(const Polynomial &);
+		Polynomial operator*(const Polynomial &);
 		void output(std::ostream &)const;
 		void input(std::istream &);
 };
@@ -348,6 +349,20 @@ Polynomial<T> &Polynomial<T>::operator+=(const Term &term)
 	return (*this);
 }
 template < typename T >
+Polynomial<T> Polynomial<T>::operator*(const Term &term)
+{
+	Polynomial<T> tmp;
+	tmp+=(*this);
+	Node *node;
+	for(node=tmp.head->next;node!=tmp.tail;node=node->next)
+	{
+		node->data+=term.data;
+		static_cast<Term*>(node)->coef*=term.coef;
+
+	}
+	return (tmp);
+}
+template < typename T >
 Polynomial<T>::Polynomial()
 {
 
@@ -369,6 +384,19 @@ Polynomial<T> &Polynomial<T>::operator+=(const Polynomial &poly)
 	return (*this);
 }
 template < typename T >
+Polynomial<T> &Polynomial<T>::operator*=(const Polynomial &poly)
+{
+	Polynomial tmp;
+	tmp+=(*this);
+	clear();
+	Node *node;
+	for(node=poly.head->next;node!=poly.tail;node=node->next)
+	{
+		operator+=(tmp*(*static_cast<Term*>(node)));
+	}
+	return (*this);
+}
+template < typename T >
 Polynomial<T> Polynomial<T>::operator+(const Polynomial &poly)
 {
 	Polynomial<T> tmp;
@@ -377,10 +405,19 @@ Polynomial<T> Polynomial<T>::operator+(const Polynomial &poly)
 	return tmp;
 }
 template < typename T >
+Polynomial<T> Polynomial<T>::operator*(const Polynomial &poly)
+{
+	Polynomial<T> tmp;
+	tmp+=(*this);
+	tmp*=(poly);
+	return tmp;
+}
+template < typename T >
 void Polynomial<T>::input(std::istream &in)
 {
 	T coef;
 	int data;
+	in.clear();
 	in>>coef>>data;
 	while(in.good())
 	{
@@ -388,6 +425,7 @@ void Polynomial<T>::input(std::istream &in)
 		in>>coef>>data;
 	}
 	in.clear();
+	in.get();
 }
 template < typename T >
 void Polynomial<T>::output(std::ostream &out)const
@@ -402,7 +440,7 @@ void Polynomial<T>::output(std::ostream &out)const
 	out<<static_cast<Term*>(node)->coef<<"x^"<<node->data;
 	for(node=node->next;node!=tail;node=node->next)
 	{
-		out<<"+"<<static_cast<Term*>(node)->coef<<"x^"<<node->data;
+		out<<std::showpos<<static_cast<Term*>(node)->coef<<std::noshowpos<<"x^"<<node->data;
 	}
 }
 
@@ -423,7 +461,10 @@ using namespace std;
 int main()
 {	
 	Polynomial<double> a(1.9,2),b(3.8,6),c,d;
-	cin>>c>>d;
+	cout<<"Input Polynomial like"<<endl;
+	cout<<"1 2 3 4 5 6 #"<<endl;
+	cin>>c;
+	cin>>d;
 	cout<<a<<endl;
 	cout<<b<<endl;
 	cout<<c<<endl;
@@ -431,5 +472,8 @@ int main()
 	cout<<a+b<<endl;
 	cout<<a+b+c<<endl;
 	cout<<a+b+c+d<<endl;
+	cout<<a*b<<endl;
+	cout<<a*b*c<<endl;
+	cout<<a*b*c*d<<endl;
 	return 0;
 }
