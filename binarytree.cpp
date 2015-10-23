@@ -12,10 +12,20 @@ class BTNode
 		T element;
 		unsigned weight;
 		BTNode<T> *leftChild,*rightChild,*parent;
-		BTNode(const T&x,const unsigned &w=0,BTNode<T> *l=NULL,BTNode<T> *r=NULL);
+		BTNode(const unsigned &w=1,BTNode<T> *l=NULL,BTNode<T> *r=NULL,BTNode<T> *p=NULL);
+		BTNode(const T&x,const unsigned &w=1,BTNode<T> *l=NULL,BTNode<T> *r=NULL,BTNode<T> *p=NULL);
 };
 template<class T>
-BTNode(const T&x,const unsigned &w=0,BTNode<T> *l=NULL,BTNode<T> *r=NULL,BTNode<T> *p);
+BTNode<T>::BTNode(const unsigned &w,BTNode<T> *l,BTNode<T> *r,BTNode<T> *p)
+{
+	weight=w;
+	leftChild=l;
+	rightChild=r;
+	parent=p;
+}
+
+template<class T>
+BTNode<T>::BTNode(const T&x,const unsigned &w,BTNode<T> *l,BTNode<T> *r,BTNode<T> *p)
 {
 	element=x;
 	weight=w;
@@ -27,10 +37,30 @@ BTNode(const T&x,const unsigned &w=0,BTNode<T> *l=NULL,BTNode<T> *r=NULL,BTNode<
 template<class T>
 class BinaryTree
 {
+	protected:
+	BTNode<T> *root;
+	public:
+	BinaryTree();
+	BinaryTree(const T&t);
+	~BinaryTree();
+	MakeTree();
+	BreakTree();
+	Root();
 };
+template<class T>
+BinaryTree<T>::BinaryTree()
+{
+	root=new BTNode<T>;
+}
+template<class T>
+BinaryTree<T>::~BinaryTree()
+{
+	delete root;
+}
+template<class T>
 using namespace std;
 int main(int argc, char **argv)
 {
-
+	BinaryTree<char> bt;
 	return 0;
 }
