@@ -23,7 +23,7 @@ else
 	RM=rm -f
 endif
 #######上面是WINDOWS不一样的地方。。。
-n=list.cpp
+n=binarytree.cpp
 SRCEXT:=$(suffix $(n))
 CC=gcc
 CXX=g++
