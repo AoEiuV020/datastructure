@@ -6,6 +6,7 @@
 ****************************************************/
 #include <iostream>
 #include <string>
+#include <queue>
 #include <cstdio>
 template<class T>
 class BTNode
@@ -48,6 +49,7 @@ class BinaryTree
 	void PreOrder(BTNode<T> *btn,std::ostream &out,std::string separate="");
 	void InOrder(BTNode<T> *btn,std::ostream &out,std::string separate="");
 	void PostOrder(BTNode<T> *btn,std::ostream &out,std::string separate="");
+	void Queue(BTNode<T> *btn,std::ostream &out,std::string separate="");
 	~BinaryTree();
 	BTNode<T> *Root();
 };
@@ -146,6 +148,21 @@ void BinaryTree<T>::PostOrder(BTNode<T> *btn,std::ostream &out,std::string separ
 	out<<(btn->element)<<separate;
 }
 template<class T>
+void BinaryTree<T>::Queue(BTNode<T> *btn,std::ostream &out,std::string separate)
+{
+	std::queue<BTNode<T>*> que;
+	que.push(root);
+	while(!que.empty())
+	{
+		BTNode<T> *t;
+		t=que.front();
+		que.pop();
+		out<<(t->element)<<separate;
+		if(t->leftChild) { que.push(t->leftChild); }
+		if(t->rightChild) { que.push(t->rightChild); }
+	}
+}
+template<class T>
 BinaryTree<T>::~BinaryTree()
 {
 	Clear(root);
@@ -171,6 +188,8 @@ int main(int argc, char **argv)
 	cout<<endl;
 	bt.PostOrder(bt.Root(),cout," ");
 	cout<<endl;
+	bt.Queue(bt.Root(),cout," ");
+	cout<<endl;
 	bt.Clear(bt.Root());
 	bt.Clear(bt.Root());
 	bt.MakeTree('s');
@@ -192,6 +211,8 @@ int main(int argc, char **argv)
 	bt.InOrder(bt.Root(),cout," ");
 	cout<<endl;
 	bt.PostOrder(bt.Root(),cout," ");
+	cout<<endl;
+	bt.Queue(bt.Root(),cout," ");
 	cout<<endl;
 	return 0;
 }
