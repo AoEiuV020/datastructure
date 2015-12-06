@@ -1,0 +1,60 @@
+/*****************************************************
+	^> File Name: graph.cpp
+	^> Author: AoEiuV020
+	^> Mail: 490674483@qq.com
+	^> Created Time: 2015/12/06 - 18:10:08
+****************************************************/
+#include <iostream>
+using namespace std;
+typedef int ResultCode;
+enum { Success, Failure, NotPresent,Duplicate};
+template <class T>
+class MGraph
+{
+	public:
+		MGraph(int mSize,const T& noedg)
+		{
+			n=mSize;e=0;noEdge=noedg;
+			a=new T*[n];
+			for(int i=0;i<n;i++)
+			{
+				a[i]=new T [n];
+				for(int j=0;j<n;j++) a[i][j]=noEdge;
+				a[i][i]=0;
+			}
+		}
+		~MGraph()
+		{
+			for(int i=0;i<n;i++) delete[] a[i];
+			delete[] a;
+		}
+		ResultCode Insert(int u,int v,const T& w)
+		{
+			if(u<0||v<0||u>n-1||v>n-1||u==v) return Failure;
+			if(a[u][v]!=noEdge) return Duplicate;
+			a[u][v]=w;e++;return Success;
+		}
+		ResultCode Remove(int u,int v)
+		{
+			if(u<0||v<0||u>n-1||v>n-1||u==v) return Failure;
+			if(a[u][v]==noEdge)return NotPresent;
+			a[u][v]=noEdge;e--;return Success;
+		}
+		bool Exist(int u,int v)const
+		{
+			if(u<0||v<0||u>n-1||v>n-1||u==v) return Failure;
+			return a[u][v]!=noEdge;
+		}
+	protected:
+		T **a;
+		T noEdge;
+		int n,e;
+};
+int main(int argc, char **argv)
+{
+	MGraph<int> mgraph(4,-1);
+	cout<<mgraph.Exist(2,3)<<endl;
+	cout<<mgraph.Insert(2,3,8)<<endl;
+	cout<<mgraph.Exist(2,3)<<endl;
+	return 0;
+}
